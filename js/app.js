@@ -23,21 +23,28 @@ const displayNewsCategories = (categories) => {
 const loadNews = (url) => {
     fetch(url)
         .then(res => res.json())
-        .then(data => displayNews(data.data))
+        .then(data => sort(data.data))
         .catch(error => console.log(error))
+}
+
+const sort = (array) =>{
+    const sortedArray = array.sort(({ total_view: a }, { total_view: b }) => b - a);
+    displayNews(sortedArray);
 }
 
 const displayNews = (newsList) => {
     const newsSection = document.getElementById('news-section');
     newsSection.innerHTML = ``;
-    newsList.forEach(news => {
-        const fullNews = news.details;
-        const shortNews = fullNews.slice(0, 350);
-        console.log(news);
-        const div = document.createElement('div');
-        //div.classList.add('full-screen'); **will be modified later on external css file**
-        div.innerHTML = `
-        <div class="card mb-3 p-3">
+    console.log(newsList.length);
+    if(newsList.length > 0){
+        newsList.forEach(news => {
+            const fullNews = news.details;
+            const shortNews = fullNews.slice(0, 350);
+            //console.log(news);
+            const div = document.createElement('div');
+            //div.classList.add('full-screen'); **will be modified later on external css file**
+            div.innerHTML = `
+        <div class="card mb-3 p-3 border border-0 shadow">
                 <div class="row g-0">
                     <div class="col-md-3">
                         <img src="${news.thumbnail_url}" class="img-fluid" alt="...">
@@ -53,11 +60,11 @@ const displayNews = (newsList) => {
                                             <img src="${news.author.img}" class="img-fluid d-inline" style="height: 50px;" alt="">
                                         </div>
                                         <div>
-                                            <p class="card-text mb-0"><small>${news.author.name}</small></p>
+                                            <p class="card-text mb-0"><small>${news.author.name ? news.author.name : 'No data available.'}</small></p>
                                             <p class="card-text"><small class="text-muted">${news.author.published_date}</small></p>
                                         </div>
                                     </div>
-                                    <p class="card-text mb-0"><i class="fa-solid fa-eye"></i> ${news.total_view}</p>
+                                    <p class="card-text mb-0"><i class="fa-solid fa-eye"></i> ${news.total_view ? news.total_view : 'No data available.'}</p>
                                     <div class="d-flex">
                                         <i class="fa-solid fa-star-half-stroke"></i>
                                         <i class="fa-regular fa-star"></i>
@@ -73,8 +80,17 @@ const displayNews = (newsList) => {
                 </div>
             </div>
         `;
+            newsSection.appendChild(div);
+        })
+    }
+    else{
+        const div = document.createElement('div');
+        div.classList.add('text-center','text-secondary');
+        div.innerHTML=`
+        <h4>No News Found !</h4>
+        `;
         newsSection.appendChild(div);
-    })
+    }
 }
 
 loadCategories();
