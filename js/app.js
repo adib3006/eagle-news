@@ -1,3 +1,5 @@
+const defaultURL = `https://openapi.programming-hero.com/api/news/category/08`;
+
 const loadCategories = () => {
     const url = `https://openapi.programming-hero.com/api/news/categories`;
     fetch(url)
@@ -14,27 +16,32 @@ const displayNewsCategories = (categories) => {
         const link = document.createElement('button');
         link.classList.add('btn', 'btn-light', 'text-secondary', 'text-center');
         link.innerHTML = `
-        <p class="mb-0" onclick="loadNews('${url}')">${category.category_name}</p>
+        <p class="mb-0" onclick="loadNews('${url}','${category.category_name}')">${category.category_name}</p>
         `;
         categoriesField.appendChild(link);
     })
 }
 
-const loadNews = (url) => {
-    fetch(url)
+const loadNews = (URL,categoryName) => {
+    fetch(URL)
         .then(res => res.json())
-        .then(data => sort(data.data))
+        .then(data => sort(data.data,categoryName))
         .catch(error => console.log(error))
 }
 
-const sort = (array) =>{
+const sort = (array,categoryName) =>{
     const sortedArray = array.sort(({ total_view: a }, { total_view: b }) => b - a);
-    displayNews(sortedArray);
+    displayNews(sortedArray,categoryName);
 }
 
-const displayNews = (newsList) => {
+const displayNews = (newsList,categoryName) => {
     const newsSection = document.getElementById('news-section');
+    const newsCount = document.getElementById('total-news-count');
     newsSection.innerHTML = ``;
+    newsCount.innerHTML = ``;
+    const p = document.createElement('p');
+    p.innerText = `${newsList.length} items found for category ${categoryName}`;
+    newsCount.appendChild(p);
     console.log(newsList.length);
     if(newsList.length > 0){
         newsList.forEach(news => {
@@ -94,3 +101,6 @@ const displayNews = (newsList) => {
 }
 
 loadCategories();
+
+//optional
+loadNews(defaultURL,'All News');
