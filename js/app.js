@@ -23,6 +23,7 @@ const displayNewsCategories = (categories) => {
 }
 
 const loadNews = (URL,categoryName) => {
+    toggleSpinner(true);
     fetch(URL)
         .then(res => res.json())
         .then(data => sort(data.data,categoryName))
@@ -88,7 +89,8 @@ const displayNews = (newsList,categoryName) => {
             </div>
         `;
             newsSection.appendChild(div);
-        })
+        });
+        toggleSpinner(false);
     }
     else{
         const div = document.createElement('div');
@@ -97,6 +99,17 @@ const displayNews = (newsList,categoryName) => {
         <h4>No News Found !</h4>
         `;
         newsSection.appendChild(div);
+        toggleSpinner(false);
+    }
+}
+
+const toggleSpinner = isLoading => {
+    const loaderSection = document.getElementById('loader');
+    if (isLoading) {
+        loaderSection.classList.remove('d-none');
+    }
+    else {
+        loaderSection.classList.add('d-none');
     }
 }
 
