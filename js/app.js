@@ -43,7 +43,7 @@ const displayNews = (newsList,categoryName) => {
     const p = document.createElement('p');
     p.innerText = `${newsList.length} items found for category ${categoryName}`;
     newsCount.appendChild(p);
-    console.log(newsList.length);
+    //console.log(newsList.length);
     if(newsList.length > 0){
         newsList.forEach(news => {
             const fullNews = news.details;
@@ -80,11 +80,11 @@ const displayNews = (newsList,categoryName) => {
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
                                     </div>
-                                    <button class="btn btn-white text-secondary"><i class="fa-solid fa-arrow-right text-primary"></i></button>
+                                    <button onclick="loadNewsDetails('${news._id}')" class="btn btn-white text-secondary" data-bs-toggle="modal" data-bs-target="#newsDetailModal"><i class="fa-solid fa-arrow-right text-primary"></i></button>
                                 </div>
                             </div>
                         </div>
-                    
+
                 </div>
             </div>
         `;
@@ -111,6 +111,27 @@ const toggleSpinner = isLoading => {
     else {
         loaderSection.classList.add('d-none');
     }
+}
+
+const loadNewsDetails = id =>{
+    const url = `https://openapi.programming-hero.com/api/news/${id}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displayNewsDetails(data.data[0]))
+        .catch(error => console.log(error))
+}
+
+const displayNewsDetails = news => {
+    console.log(news);
+    const modalTitle = document.getElementById('newsDetailModalLabel');
+    modalTitle.innerText = news.title;
+    const newsDetails = document.getElementById('news-details');
+    newsDetails.innerHTML = `
+    <img src="${news.image_url}" class="img-fluid" alt="...">
+    <p>Read Full News: ${news.details}</p>
+    <p class="pt-2">Status: ${news.others_info.is_trending ? 'This is a trending news !' : 'Not trending now.'}</p>
+    <p>Author: ${news.author.name ? news.author.name : 'No data available.'}</p>
+    `;
 }
 
 loadCategories();
