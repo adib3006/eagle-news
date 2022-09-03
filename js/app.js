@@ -47,8 +47,13 @@ const displayNews = (newsList,categoryName) => {
     if(newsList.length > 0){
         newsList.forEach(news => {
             const fullNews = news.details;
-            const shortNews = fullNews.slice(0, 350);
-            //console.log(news);
+            let newsDetail = '';
+            if(fullNews.length > 350){
+                newsDetail = fullNews.slice(0, 350) + "&hellip;";
+            }
+            else{
+                newsDetail = fullNews;
+            }
             const div = document.createElement('div');
             //div.classList.add('full-screen'); **will be modified later on external css file**
             div.innerHTML = `
@@ -61,7 +66,7 @@ const displayNews = (newsList,categoryName) => {
                         <div class="col-md-9">
                             <div class="card-body">
                                 <h5 class="card-title pb-4">${news.title}</h5>
-                                <p class="card-text pb-4">${shortNews}</p>
+                                <p class="card-text pb-4">${newsDetail}</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex">
                                         <div class="me-2">
