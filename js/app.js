@@ -1,5 +1,3 @@
-const defaultURL = `https://openapi.programming-hero.com/api/news/category/08`;
-
 const loadCategories = () => {
     const url = `https://openapi.programming-hero.com/api/news/categories`;
     fetch(url)
@@ -12,7 +10,6 @@ const displayNewsCategories = (categories) => {
     categories.forEach(category => {
         const categoriesField = document.getElementById('categories-section');
         const url = `https://openapi.programming-hero.com/api/news/category/${category.category_id}`;
-        //console.log(category);
         const link = document.createElement('button');
         link.classList.add('btn', 'btn-light', 'text-secondary', 'text-center');
         link.innerHTML = `
@@ -43,7 +40,6 @@ const displayNews = (newsList,categoryName) => {
     const p = document.createElement('p');
     p.innerText = `${newsList.length} items found for category ${categoryName}`;
     newsCount.appendChild(p);
-    //console.log(newsList.length);
     if(newsList.length > 0){
         newsList.forEach(news => {
             const fullNews = news.details;
@@ -55,44 +51,43 @@ const displayNews = (newsList,categoryName) => {
                 newsDetail = fullNews;
             }
             const div = document.createElement('div');
-            //div.classList.add('full-screen'); **will be modified later on external css file**
             div.innerHTML = `
-        <div class="card mb-3 p-3 border border-0 shadow">
-                <div class="row g-0">
-                    <div class="col-md-3">
-                        <img src="${news.thumbnail_url}" class="img-fluid" alt="...">
-                    </div>
-                    
-                        <div class="col-md-9">
-                            <div class="card-body">
-                                <h5 class="card-title pb-4">${news.title}</h5>
-                                <p class="card-text pb-4">${newsDetail}</p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex">
-                                        <div class="me-2">
-                                            <img src="${news.author.img}" class="img-fluid d-inline" style="height: 50px;" alt="">
+                <div class="card mb-3 p-3 border border-0 shadow">
+                    <div class="row g-0">
+                        <div class="col-12 col-lg-3 text-center">
+                            <img src="${news.thumbnail_url}" class="img-fluid" alt="...">
+                        </div>
+                        
+                            <div class="col-12 col-lg-9">
+                                <div class="card-body">
+                                    <h5 class="card-title pb-4">${news.title}</h5>
+                                    <p class="card-text pb-4">${newsDetail}</p>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex">
+                                            <div class="me-2">
+                                                <img src="${news.author.img}" class="img-fluid d-inline" style="height: 50px;" alt="">
+                                            </div>
+                                            <div>
+                                                <p class="card-text mb-0"><small>${news.author.name ? news.author.name : 'No data available.'}</small></p>
+                                                <p class="card-text"><small class="text-muted">${news.author.published_date}</small></p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="card-text mb-0"><small>${news.author.name ? news.author.name : 'No data available.'}</small></p>
-                                            <p class="card-text"><small class="text-muted">${news.author.published_date}</small></p>
+                                        <p class="card-text mb-0"><i class="fa-solid fa-eye"></i> ${news.total_view ? news.total_view : 'No data available.'}</p>
+                                        <div class="d-flex">
+                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
                                         </div>
+                                        <button onclick="loadNewsDetails('${news._id}')" class="btn btn-white text-secondary" data-bs-toggle="modal" data-bs-target="#newsDetailModal"><i class="fa-solid fa-arrow-right text-primary"></i></button>
                                     </div>
-                                    <p class="card-text mb-0"><i class="fa-solid fa-eye"></i> ${news.total_view ? news.total_view : 'No data available.'}</p>
-                                    <div class="d-flex">
-                                        <i class="fa-solid fa-star-half-stroke"></i>
-                                        <i class="fa-regular fa-star"></i>
-                                        <i class="fa-regular fa-star"></i>
-                                        <i class="fa-regular fa-star"></i>
-                                        <i class="fa-regular fa-star"></i>
-                                    </div>
-                                    <button onclick="loadNewsDetails('${news._id}')" class="btn btn-white text-secondary" data-bs-toggle="modal" data-bs-target="#newsDetailModal"><i class="fa-solid fa-arrow-right text-primary"></i></button>
                                 </div>
                             </div>
-                        </div>
 
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
             newsSection.appendChild(div);
         });
         toggleSpinner(false);
@@ -133,13 +128,13 @@ const displayNewsDetails = news => {
     const newsDetails = document.getElementById('news-details');
     newsDetails.innerHTML = `
     <img src="${news.image_url}" class="img-fluid" alt="...">
+    <h6 class="pt-2">Label: ${news.others_info.is_todays_pick ? 'Latest news !' : 'Previous news.'}</h6>
     <p>Read Full News: ${news.details}</p>
     <p class="pt-2">Status: ${news.others_info.is_trending ? 'This is a trending news !' : 'Not trending now.'}</p>
     <p>Author: ${news.author.name ? news.author.name : 'No data available.'}</p>
+    <p>Rating by Readers: ${news.rating.number ? news.rating.number : 'No data available.'}</p>
+    <p>Badge: ${news.rating.badge ? news.rating.badge : 'No data available.'}</p>
     `;
 }
 
 loadCategories();
-
-//optional
-loadNews(defaultURL,'All News');
